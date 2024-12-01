@@ -2,7 +2,7 @@ use std::io::Cursor;
 
 use crate::res::*;
 
-use anyhow::{Context, Result};
+use anyhow::{anyhow, Context, Result};
 
 pub struct Ref<'a> {
     package: Option<&'a str>,
@@ -195,8 +195,10 @@ impl Table {
     pub fn load() -> Result<Self> {
         let buf = include_bytes!("../resources.arsc");
         let chunk = crate::res::Chunk::parse(&mut Cursor::new(buf))?;
-        let packages = if let crate::res::Chunk::Table(_, p) = chunk { p } else { vec![] };
-        Ok(Self { packages })
+        match chunk {
+            Chunk::Table(_, packages) => Ok(Self { packages }),
+            _ => return Err(anyhow!("Invalid chunk"))
+        }
     }
 
     fn lookup_package_id(&self, name: Option<&str>) -> Result<u8> {
