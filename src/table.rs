@@ -1,3 +1,5 @@
+use std::io::Cursor;
+
 use crate::res::*;
 
 use anyhow::{Context, Result};
@@ -189,6 +191,13 @@ pub struct Table {
 }
 
 impl Table {
+
+    pub fn load() -> Result<Self> {
+        let buf = include_bytes!("../resources.arsc");
+        let chunk = crate::res::Chunk::parse(&mut Cursor::new(buf))?;
+        let packages = if let crate::res::Chunk::Table(_, p) = chunk { p } else { vec![] };
+        Ok(Self { packages })
+    }
 
     fn lookup_package_id(&self, name: Option<&str>) -> Result<u8> {
         if let Some(name) = name {
