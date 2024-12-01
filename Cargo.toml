@@ -1,0 +1,13 @@
+[package]
+name = "rust-android-xml"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "src/lib.rs"
+doctest = false
+
+[dependencies]
+byteorder = "1.4.3"
+roxmltree = "0.16.0"
+anyhow = "1.0.93"
